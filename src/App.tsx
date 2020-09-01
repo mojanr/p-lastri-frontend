@@ -1,25 +1,21 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+// import './App.css';
+import { useLocation, Switch } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion'
+import { renderRoutes } from 'react-router-config';
+import { ROUTE } from 'config/index.config'
 
 function App() {
+  // use location
+  const location = useLocation() 
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    // <AnimatePresence exitBeforeEnter initial={false}>
+      <Switch location={location}>
+        {renderRoutes([ROUTE])}
+      </Switch>
+    // </AnimatePresence>
   );
 }
 
