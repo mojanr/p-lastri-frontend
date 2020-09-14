@@ -71,7 +71,7 @@ const TableVerificationComponent: FunctionComponent = () => {
       title: 'ID Pengajuan',
       dataIndex: 'id',
       key: 'id',
-      render: (submissionId: string) => <Link to={`/main/account/verification/${submissionId}`}> {submissionId} </Link>
+      render: (submissionId: string) => <Link to={`/main/change-data/verification/${submissionId}`}> {submissionId} </Link>
     },
     {
       title: 'Perusahaan',

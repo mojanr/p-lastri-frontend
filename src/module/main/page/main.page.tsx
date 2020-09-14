@@ -74,7 +74,8 @@ const SiderMenu = styled(AntSider)`
   padding: 15px;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 14px;
-  position: absolute;
+  position: fixed;
+  overflow: auto;
   top: 0;
   bottom: 0;
 `

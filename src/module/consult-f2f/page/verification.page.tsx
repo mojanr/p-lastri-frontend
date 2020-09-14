@@ -1,11 +1,15 @@
 import React, { memo, FunctionComponent } from 'react'
-import { PageTransitionComponent, HeaderComponent } from 'common/component/index.component'
+import { PageTransitionComponent, HeaderComponent, CardComponent } from 'common/component/index.component'
+import TableVerificationComponent from '../component/table-verification.component'
 
 const VerificationPage: FunctionComponent = () => {
   return (
     <PageTransitionComponent direction="horizontal">
       <HeaderComponent title="Verifikasi Pengajuan Konsultasi Tatap Muka" />
 
+      <CardComponent elevation="e300">
+        <TableVerificationComponent />
+      </CardComponent>
     </PageTransitionComponent>
   )
 }

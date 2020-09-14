@@ -87,7 +87,7 @@ const PublicPage: FunctionComponent = () => {
               exit="exit"
             >
               <div>
-                <HeaderComponent title={<Typography.Title level={1}> Lastri </Typography.Title>} />
+                <HeaderComponent title={<Typography.Title level={1}> Digital Revisi </Typography.Title>} />
                 <HeaderComponent title="Layanan Registrasi, Verifikasi, dan Konsultasi Pelaku Usaha" />
                 <Row gutter={12}>
                   <Col span={12}><Link to="/auth/register">  <Button type="primary" block> Register </Button> </Link> </Col>
@@ -127,7 +127,7 @@ const PublicPage: FunctionComponent = () => {
             {/* <HeaderComponent title="Layanan Registrasi, Verifikasi, dan Konsultasi Pelaku Usaha" /> */}
 
             {/* <div>
-              <HeaderComponent title={<Typography.Title level={1}> Lastri </Typography.Title>} />
+              <HeaderComponent title={<Typography.Title level={1}> Digital Revisi </Typography.Title>} />
               <HeaderComponent title="Layanan Registrasi, Verifikasi, dan Konsultasi Pelaku Usaha" />
               <Row gutter={12}>
                 <Col span={12}><Link to="/auth/register">  <Button type="primary" block> Register </Button> </Link> </Col>
@@ -175,7 +175,7 @@ const PublicPage: FunctionComponent = () => {
           {/* <Footer>
             <Typography.Text strong > Layanan Registrasi, Verifikasi, dan Konsultasi Pelaku Usaha </Typography.Text>
             <br></br>
-            <Typography.Text strong > (LASTRI) </Typography.Text>
+            <Typography.Text strong > (Digital Revisi) </Typography.Text>
           </Footer> */}
         </AntLayout>
       </AntLayout>
