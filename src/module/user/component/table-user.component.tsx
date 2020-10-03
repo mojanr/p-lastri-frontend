@@ -1,9 +1,11 @@
-import React, { memo, FunctionComponent } from 'react'
+import React, { memo, FunctionComponent, useEffect } from 'react'
 import { Table, Tag, Space, Button, Tooltip } from 'antd'
 import { ColumnsType } from 'antd/lib/table';
 import { CardComponent } from 'common/component/index.component';
-import { EditOutlined } from '@ant-design/icons';
 import { useModalFormUser } from './modal-form-user.component';
+import TableActionComponent from './table-action.component';
+import { useServiceStore } from 'store/service/_index-service.store';
+import { observer } from 'mobx-react';
 
 const dataSource = [
   {
@@ -38,16 +40,26 @@ const TableUserComponent: FunctionComponent = () => {
   // open modal form user
   const openModalFormUser = () => modalFormUser.open()
 
+  // use store
+  const { userStore } = useServiceStore()
+
   const columns: ColumnsType<any> = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: 'No',
+      key: 'no',
+      render: (value, record, index) => index+1,
+      width: 50
     },
+    // {
+    //   title: 'ID',
+    //   dataIndex: 'id',
+    //   key: 'id',
+    // },
     {
       title: 'Nama',
-      dataIndex: 'nama',
-      key: 'nama',
+      dataIndex: 'info',
+      key: 'info',
+      render: (info) => info?.name
     },
     {
       title: 'Email',
@@ -58,33 +70,34 @@ const TableUserComponent: FunctionComponent = () => {
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (role) => <Tag> {role} </Tag>
+      render: (role) => <Tag> {role?.name} </Tag>
     },
     {
       title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => <Tag color={status ? 'green' : 'red'}> {status ? 'Active' : 'Inactive'} </Tag>
+      dataIndex: 'active',
+      key: 'active',
+      render: (isActive) => <Tag color={isActive ? 'green' : 'red'}> {isActive ? 'Active' : 'Inactive'} </Tag>,
+      width: 150,
     },
     {
       title: 'Action',
       dataIndex: 'action',
       key: 'action',
-      render: () => (
-        <Space direction="horizontal" size={10}>
-          {/* <Tooltip placement="bottom" title="Edit"> */}
-          <Button icon={<EditOutlined />} type="link" size="small" onClick={openModalFormUser}> Edit </Button>
-          {/* </Tooltip> */}
-        </Space>
-      )
+      width: 150,
+      render: () => (<TableActionComponent />)
     },
   ];
 
+  // use effce
+  useEffect(() => {
+    userStore.fetchUsers()
+  }, [])
+
   return (
     <CardComponent>
-      <Table dataSource={dataSource} columns={columns} size="small" />
+      <Table dataSource={userStore.getUsers} columns={columns} size="small" />
     </CardComponent>
   )
 }
 
-export default memo(TableUserComponent)
+export default memo(observer(TableUserComponent))

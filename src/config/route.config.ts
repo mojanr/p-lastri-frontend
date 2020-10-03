@@ -21,6 +21,12 @@ import ConsultOnlinePage from "module/consult-online/page/consult-online.page";
 import { default as VerificationConsultationOnlinePage } from "module/consult-online/page/verification.page";
 import ConsultF2FPage from "module/consult-f2f/page/consult-f2f.page";
 import { default as VerificationConsultationF2FPage } from "module/consult-f2f/page/verification.page";
+import RolePage from "module/role/page/role.page";
+import SubmissionTypePage from "module/submission/page/submission-type.page";
+import SubmissionTypeRequirementPage from "module/submission/page/submission-type-requirement.page";
+import SubmissionPage from "module/submission/page/submission.page";
+import SubmissionApprovalPage from "module/submission/page/submission-approval.page";
+import SubmissionApprovalVerificationPage from "module/submission/page/submission-approval-verification.page";
 
 export const ROUTE: RouteConfig = {
   component: AppRoot,
@@ -55,10 +61,19 @@ export const ROUTE: RouteConfig = {
       exact: false,
       component: MainPage,
       routes: [
+
+        // user
         {
           path: '/main/user',
           exact: true,
           component: UserPage
+        },
+
+        // role
+        {
+          path: '/main/role',
+          exact: true,
+          component: RolePage
         },
 
         // penyedia
@@ -94,6 +109,39 @@ export const ROUTE: RouteConfig = {
           exact: true,
           component: ServicePage
         },
+
+        // submission type
+        {
+          path: '/main/submission/type',
+          exact: true,
+          component: SubmissionTypePage
+        },
+        // submission type requirement
+        {
+          path: '/main/submission/type/requirement/:submissionTypeId',
+          exact: true,
+          component: SubmissionTypeRequirementPage
+        },
+        // submission
+        {
+          path: '/main/submission/:submissionTypeId',
+          exact: true,
+          component: SubmissionPage
+        },
+        // submission approval
+        {
+          path: '/main/submission/verification/:submissionTypeId',
+          exact: true,
+          component: SubmissionApprovalPage
+        },
+
+        // submission approval verification
+        {
+          path: '/main/submission/verification/:submissionTypeId/:submissionId',
+          exact: true,
+          component: SubmissionApprovalVerificationPage
+        },
+
 
         // pembuatan akun baru
         {

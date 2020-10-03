@@ -23,14 +23,16 @@ const FieldInputComponent: FunctionComponent<FieldInputComponentProps> = ({
   allowClear = true,
   maxLength = 200,
   minLength,
-  autoComplete = "off"
+  autoComplete = "off",
+  required,
+  style
 }) => {
   // use form context
   const { register, control, errors } = useFormContext()
 
   return (
     <Form.Item
-      label={label && <Typography.Text strong> {label} </Typography.Text>}
+      label={label && <Typography.Text strong> {required && <span style={{ color: 'red' }}>*</span>} {label} </Typography.Text>}
       validateStatus={errors[name]?.message && 'error'}
       help={errors[name]?.message}
     >
@@ -47,6 +49,7 @@ const FieldInputComponent: FunctionComponent<FieldInputComponentProps> = ({
             autoComplete={autoComplete}
             maxLength={maxLength}
             minLength={minLength}
+            style={style}
           />
         }
         control={control}

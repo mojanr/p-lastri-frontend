@@ -11,7 +11,7 @@ const RegisterComponent: FunctionComponent = () => {
       </HeaderComponent>
 
       <Form.Item>
-        <Alert type="info" message={<Typography.Text strong >Pastikan data yang didaftarkan adalah data yang sama dengan akun LPSE</Typography.Text>} />
+        <Alert type="warning" message={<Typography.Text strong >Pastikan data yang didaftarkan adalah data yang sama dengan akun LPSE</Typography.Text>} />
       </Form.Item>
 
       <FormRegisterComponent />

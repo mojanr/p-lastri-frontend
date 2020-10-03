@@ -24,13 +24,14 @@ const FieldPasswordComponent: FunctionComponent<FieldPasswordComponentProps> = (
   maxLength = 200,
   minLength,
   autoComplete = "off",
+  required
 }) => {
   // use form context
   const { register, control, errors } = useFormContext()
 
   return (
     <Form.Item
-      label={label && <Typography.Text strong> {label} </Typography.Text>}
+      label={label && <Typography.Text strong> {required && <span style={{ color: 'red' }}>*</span>} {label} </Typography.Text>}
       validateStatus={errors[name]?.message && 'error'}
       help={errors[name]?.message}
     >

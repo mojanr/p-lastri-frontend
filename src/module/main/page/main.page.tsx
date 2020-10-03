@@ -1,4 +1,4 @@
-import React, { memo, FunctionComponent } from 'react'
+import React, { memo, FunctionComponent, useState, useEffect } from 'react'
 import { Layout as AntLayout, Typography, Row, Col, Space, Card, Divider, Form, Button, Tooltip } from 'antd'
 import styled from 'styled-components'
 import MenuComponent from '../component/main/component/menu.component'
@@ -10,6 +10,12 @@ import { STYLE } from 'config/index.config'
 import { LogoutOutlined } from '@ant-design/icons'
 import SiderIconComponent from '../component/main/component/sider-icon.component'
 import { motion } from 'framer-motion'
+import { observer } from 'mobx-react'
+import { useServiceStore } from 'store/service/_index-service.store'
+import MenuAdminComponent from '../component/main/component/menu-admin.component'
+import MenuHelpdeskComponent from '../component/main/component/menu-helpdesk.component'
+import MenuVerifikatorComponent from '../component/main/component/menu-verifikator.component'
+import MenuProviderComponent from '../component/main/component/menu-provider.component'
 
 const { Sider: AntSider, Header: AntHeader, Content: AntContent, Footer: AntFooter } = AntLayout
 
@@ -104,6 +110,24 @@ const SiderMenuAnimationVariants = {
 }
 
 const MainPage: FunctionComponent<RouteConfigComponentProps> = (props) => {
+
+  // use service store
+  const { authStore } = useServiceStore()
+
+  const [user, setUser] = useState<any>()
+
+  // use effect
+  useEffect(() => {
+    init()
+  }, [])
+
+  const init = async () => {
+    const user = `${await authStore.getUser()}`
+    const parse = JSON.parse(user)
+    setUser(parse)
+    console.log(parse)
+  }
+
   return (
     // <AntLayout>
     //   <Sider width={SiderWidth}>
@@ -167,11 +191,14 @@ const MainPage: FunctionComponent<RouteConfigComponentProps> = (props) => {
               >
                 <div>
                   <Card style={{ backgroundColor: STYLE.COLOR.GRAY }} bodyStyle={{ padding: 15 }} hoverable>
-                    <Typography.Text strong> PT NAMA PERUSAHAAN </Typography.Text>
+                    <Typography.Text strong> {user?.info?.name} </Typography.Text>
                     {/* <Divider type="vertical" style={{ borderColor: STYLE.COLOR.PRIMARY }} /> */}
-                    <Typography.Text> 10.10.10.10.10.I.10 </Typography.Text>
+                    {/* <Typography.Text> 10.10.10.10.10.I.10 </Typography.Text> */}
                   </Card>
-                  <MenuComponent />
+                  {user?.role?.name == 'Admin' && <MenuAdminComponent />}
+                  {user?.role?.name == 'Helpdesk' && <MenuHelpdeskComponent />}
+                  {user?.role?.name == 'Verifikator' && <MenuVerifikatorComponent />}
+                  {user?.role?.name == 'Provider' && <MenuProviderComponent />}
                 </div>
               </motion.div>
 
@@ -188,4 +215,4 @@ const MainPage: FunctionComponent<RouteConfigComponentProps> = (props) => {
   )
 }
 
-export default memo(MainPage)
+export default memo(observer(MainPage))

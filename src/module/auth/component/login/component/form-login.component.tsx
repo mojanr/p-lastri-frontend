@@ -8,6 +8,8 @@ import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons'
 import { STYLE } from 'config/style.config'
 import { Link, useHistory } from 'react-router-dom'
 import { useStore } from 'store/index.store'
+import { observer } from 'mobx-react'
+import { useServiceStore } from 'store/service/_index-service.store'
 
 // 
 interface Submit {
@@ -30,7 +32,7 @@ const FormLoginSchema: yup.ObjectSchema<FormLogin> = yup.object().shape({
 
 const FormLoginComponent: FunctionComponent = () => {
   // use store
-  const { serviceStore } = useStore()
+  const { authStore } = useServiceStore()
   const [isSubmit, setSubmit] = useState<Submit>()
 
   // use form
@@ -44,18 +46,24 @@ const FormLoginComponent: FunctionComponent = () => {
 
   // login handler
   const onSubmitLogin = async (loginData: FormLogin) => {
-    try {
-      // console.log(loginData)
-      setSubmit({ loading: true })
-      const result = await serviceStore.authStore.login(loginData)
-      setSubmit({ loading: false })
-      history.push('/main/dashboard')
-      // history.push('/main')
-    } catch (error) {
-      if (!error.response) {
-        setSubmit({ loading: false, statusCode: 500, message: 'Suddenly our server is currently down' })
-      }
+    const result = await authStore.login(loginData)
+    console.log('result login', result)
+    if (result) {
+      history.push('/main')
     }
+    // console.log(loginData)
+    // try {
+    //   // console.log(loginData)
+    //   setSubmit({ loading: true })
+    //   const result = await serviceStore.authStore.login(loginData)
+    //   setSubmit({ loading: false })
+    //   history.push('/main/dashboard')
+    //   // history.push('/main')
+    // } catch (error) {
+    //   if (!error.response) {
+    //     setSubmit({ loading: false, statusCode: 500, message: 'Suddenly our server is currently down' })
+    //   }
+    // }
   }
 
   return (
@@ -97,4 +105,4 @@ const FormLoginComponent: FunctionComponent = () => {
   )
 }
 
-export default memo(FormLoginComponent)
+export default memo(observer(FormLoginComponent))

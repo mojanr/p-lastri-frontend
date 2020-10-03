@@ -4,10 +4,15 @@ import { AntDesignOutlined, LogoutOutlined } from '@ant-design/icons'
 import { useHistory } from 'react-router-dom'
 import styled from 'styled-components'
 import { Space } from 'antd'
+import { observer } from 'mobx-react'
+import { useServiceStore } from 'store/service/_index-service.store'
 
 const SiderIconComponent: FunctionComponent = () => {
   // use history
   const history = useHistory()
+
+  // use service store
+  const { authStore } = useServiceStore()
 
   const SiderIconItems: SiderIconItem[] = [
     {
@@ -16,7 +21,10 @@ const SiderIconComponent: FunctionComponent = () => {
     {
       tooltip: 'Logout',
       icon: <LogoutOutlined />,
-      onClick: () => history.push('/')
+      onClick: () => {
+        authStore.logout()
+        history.push('/')
+      }
     },
   ]
 
@@ -27,4 +35,4 @@ const SiderIconComponent: FunctionComponent = () => {
   )
 }
 
-export default memo(SiderIconComponent)
+export default memo(observer(SiderIconComponent))

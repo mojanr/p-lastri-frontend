@@ -9,6 +9,8 @@ import { STYLE } from 'config/style.config'
 import { Link } from 'react-router-dom'
 import TermsAndConditionsComponent from './terms-and-conditions.component'
 import { useStore } from 'store/index.store'
+import { observer } from 'mobx-react'
+import { useServiceStore } from 'store/service/_index-service.store'
 
 // 
 interface Submit {
@@ -19,8 +21,8 @@ interface Submit {
 
 // form register
 interface FormRegister {
-  namaPerusahaan: string
-  npwpPerusahaan: string
+  name: string
+  npwp: string
   email: string
   password: string
   confirmPassword: string
@@ -29,8 +31,8 @@ interface FormRegister {
 
 // default value
 const FormRegisterDefaultValue: FormRegister = {
-  namaPerusahaan: '',
-  npwpPerusahaan: '',
+  name: '',
+  npwp: '',
   email: '',
   password: '',
   confirmPassword: '',
@@ -39,17 +41,18 @@ const FormRegisterDefaultValue: FormRegister = {
 
 // form register schema
 const FormRegisterSchema: yup.ObjectSchema<FormRegister> = yup.object().shape({
-  namaPerusahaan: yup.string().required().defined(),
-  npwpPerusahaan: yup.string().required().matches(/^[0-9]+$/, 'Must be a number').min(15).max(15).defined(),
-  email: yup.string().required().email().defined(),
-  password: yup.string().required().defined(),
-  confirmPassword: yup.string().required().oneOf([yup.ref('password')], 'Password do not match').defined(),
+  name: yup.string().trim().required().defined(),
+  npwp: yup.string().trim().required().matches(/^[0-9]+$/, 'Must be a number').min(15).max(15).defined(),
+  email: yup.string().trim().required().email().defined(),
+  password: yup.string().trim().required().defined(),
+  confirmPassword: yup.string().trim().required().oneOf([yup.ref('password')], 'Password do not match').defined(),
   isAgree: yup.boolean().required().oneOf([true]).defined()
 }).defined()
 
 const FormRegisterComponent: FunctionComponent = () => {
   // use store
-  const { serviceStore } = useStore()
+  const { providerStore } = useServiceStore()
+
   const [isSubmit, setSubmit] = useState<Submit>({
     loading: false,
     statusCode: 0,
@@ -65,17 +68,13 @@ const FormRegisterComponent: FunctionComponent = () => {
 
   // register handler
   const onSubmitRegister = async (registerData: FormRegister) => {
-    try {
-      // console.log(registerData)
-      setSubmit({ loading: true })
-      const result = await serviceStore.authStore.register(registerData)
-      setSubmit({ loading: false, statusCode: result.status, message: result.data?.message })
+    setSubmit({ loading: true })
+    const result = await providerStore.registerProvider(registerData)
+    if (result) {
       formRegisterContext.reset(FormRegisterDefaultValue)
-      // history.push('/main')
-    } catch (error) {
-      if (!error.response) {
-        setSubmit({ loading: false, statusCode: 500, message: 'Suddenly our server is currently down' })
-      }
+      setSubmit({ loading: false, statusCode: 201, message: 'Register success, silahkan lakukan login' })
+    } else {
+      setSubmit({ loading: false, statusCode: 500, message: 'Register gagal' })
     }
   }
 
@@ -84,8 +83,8 @@ const FormRegisterComponent: FunctionComponent = () => {
       <Form onSubmitCapture={formRegisterContext.handleSubmit(onSubmitRegister)}>
         <Form.Item>
           <CardComponent elevation="e300">
-            <FieldInputComponent name="namaPerusahaan" placeholder="Nama Perusahaan" prefix={<UserOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
-            <FieldInputComponent name="npwpPerusahaan" placeholder="NPWP Perusahaan" prefix={<CreditCardOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
+            <FieldInputComponent name="name" placeholder="Nama Perusahaan" prefix={<UserOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
+            <FieldInputComponent name="npwp" placeholder="NPWP Perusahaan" prefix={<CreditCardOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
             <FieldInputComponent name="email" placeholder="Email" prefix={<MailOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
             <FieldPasswordComponent name="password" placeholder="New Password" prefix={<LockOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} onChange={() => console.log('test')} />
             <FieldPasswordComponent name="confirmPassword" placeholder="Confirm New Password" prefix={<LockOutlined style={{ color: STYLE.COLOR.PRIMARY }} />} />
@@ -109,17 +108,17 @@ const FormRegisterComponent: FunctionComponent = () => {
         {/* show alert register */}
         {isSubmit?.statusCode === 201 && (
           <Form.Item>
-            <Alert type="success" message={<Typography.Text strong > Register berhasil, silahkan lakukan login </Typography.Text>} />
+            <Alert type="success" message={<Typography.Text strong > {isSubmit?.message} </Typography.Text>} />
           </Form.Item>
         )}
-        {isSubmit?.statusCode === 500 && (
+        {isSubmit?.statusCode == 500 && (
           <Form.Item>
-            <Alert type="error" message={<Typography.Text strong > {isSubmit.message} </Typography.Text>} />
+            <Alert type="error" message={<Typography.Text strong > {isSubmit?.message} </Typography.Text>} />
           </Form.Item>
         )}
 
         <Form.Item>
-          <Button type="primary" htmlType="submit" block loading={isSubmit?.loading}>
+          <Button type="primary" htmlType="submit" block loading={isSubmit.loading}>
             REGISTER
           </Button>
         </Form.Item>
@@ -134,4 +133,4 @@ const FormRegisterComponent: FunctionComponent = () => {
   )
 }
 
-export default memo(FormRegisterComponent)
+export default memo(observer(FormRegisterComponent))
