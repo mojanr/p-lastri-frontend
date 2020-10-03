@@ -8,7 +8,7 @@ export class ApiService {
     // Set config defaults when creating the instance
     this.api = axios.create({
       // baseURL: ENV.REACT_APP_API_URL,
-      baseURL: 'http://localhost:3001/api',
+      baseURL: `http://${process.env.REACT_APP_API_URL}:3001/api`,
     });
 
     // Alter defaults after instance has been created
