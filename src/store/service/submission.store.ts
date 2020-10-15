@@ -212,10 +212,10 @@ export class SubmissionStore {
   }
 
   // approve requirement
-  async rejectRequirement(submissionTypeId: string | number, submissionId: string | number, submissionRequirementId: string | number) {
+  async rejectRequirement(submissionTypeId: string | number, submissionId: string | number, submissionRequirementId: string | number, reasonReject: string) {
     try {
       console.log(`[SUBMISSIONS] - Reject Requirement`, submissionRequirementId)
-      const result = await Api.submissionService.rejectRequirement(submissionRequirementId, 'reject')
+      const result = await Api.submissionService.rejectRequirement(submissionRequirementId, reasonReject)
       // await this.fetchActiveSubmission(submissionTypeId, userId)
       await this.fetchSubmissionApprovalRequirement(submissionTypeId, submissionId)
       return result.status == 200 || result.status == 201 ? true : false

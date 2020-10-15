@@ -85,11 +85,11 @@ const MenuComponent: FunctionComponent = () => {
         </SubMenu>
         <SubMenu icon={<SnippetsOutlined />} title="Konsultasi">
           <Menu.Item key="konsultasi:1" onClick={() => changeMenu('/main/consultation/online')}> Konsultasi Online </Menu.Item>
-          <Menu.Item key="konsultasi:2" onClick={() => changeMenu('/main/consultation/ftf')}> Konsultasi Tatap Muka </Menu.Item>
+          {/* <Menu.Item key="konsultasi:2" onClick={() => changeMenu('/main/consultation/ftf')}> Konsultasi Tatap Muka </Menu.Item> */}
         </SubMenu>
-        <SubMenu icon={<SnippetsOutlined />} title="Approval Konsultasi">
-          <Menu.Item key="konsultasi:1" onClick={() => changeMenu('/main/consultation/online')}> Konsultasi Online </Menu.Item>
-          <Menu.Item key="konsultasi:2" onClick={() => changeMenu('/main/consultation/ftf')}> Konsultasi Tatap Muka </Menu.Item>
+        <SubMenu icon={<SnippetsOutlined />} title="Verifikasi Konsultasi">
+          <Menu.Item key="verifikasikonsultasi:1" onClick={() => changeMenu('/main/consultation/online/verification')}> Konsultasi Online </Menu.Item>
+          {/* <Menu.Item key="verifikasikonsultasi:2" onClick={() => changeMenu('/main/consultation/ftf/verification')}> Konsultasi Tatap Muka </Menu.Item> */}
         </SubMenu>
         {/* <SubMenu icon={<SnippetsOutlined />} title="Verifikasi Layanan">
           <Menu.Item key="verregistrasi:1" onClick={() => changeMenu('/main/account/verification')}> Pembuatan Akun Baru </Menu.Item>

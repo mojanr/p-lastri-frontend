@@ -85,7 +85,8 @@ export class SubmissionService extends ApiService {
 
   // reject submission
   async rejectRequirement(submissionRequiremetId: string | number, reason: string) {
-    return this.api.patch(`/submission/requirement/${submissionRequiremetId}/reject`, reason)
+    console.log(submissionRequiremetId, reason)
+    return this.api.patch(`/submission/requirement/${submissionRequiremetId}/reject`, {reason: reason})
   }
   
   // get list submission approval

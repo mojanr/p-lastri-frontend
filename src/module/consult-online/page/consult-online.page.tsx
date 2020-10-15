@@ -2,6 +2,8 @@ import React, { memo, FunctionComponent } from 'react'
 import { PageTransitionComponent, HeaderComponent } from 'common/component/index.component'
 import styled from 'styled-components'
 import { Button, Empty, Typography, Space, Form } from 'antd'
+import FormConsultOnlineComponent from '../component/form-consult-online.component'
+import ListQuestionComponent from '../component/list-question.component'
 
 const CreateSubmission = styled.div`
   display: flex;
@@ -21,6 +23,9 @@ const ConsultOnlinePage: FunctionComponent = () => {
     <PageTransitionComponent direction="horizontal">
       <HeaderComponent title="Konsultasi Online" />
 
+      <FormConsultOnlineComponent />
+
+      <ListQuestionComponent />
       {/* <CreateSubmission>
         <CreateSubmissionContainer>
           <Form.Item>

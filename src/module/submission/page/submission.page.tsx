@@ -60,7 +60,7 @@ const SubmissionPage: FunctionComponent = () => {
       dataIndex: 'status',
       key: 'status',
       width: 200,
-      render: (isActive: any) => {
+      render: (isActive: any, record: any) => {
         switch (isActive) {
           // case 100:
           //   return (<Tag> Belum Diverifikasi </Tag>)
@@ -69,7 +69,7 @@ const SubmissionPage: FunctionComponent = () => {
           //   return (<Tag color="green"> Approve </Tag>)
           //   break;
           case 102:
-            return (<Tag color="red"> Reject </Tag>)
+            return (<div><Tag color="red"> Reject </Tag> {record.reason} </div>)
             break;
           default:
             break;

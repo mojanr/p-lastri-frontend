@@ -1,9 +1,39 @@
 import React, { memo, FunctionComponent, useState, useEffect } from 'react'
 import { PageTransitionComponent, HeaderComponent } from 'common/component/index.component'
-import { Button, Empty, Typography, Space, Form, Table, Tag, Upload as AntUpload, Alert } from 'antd'
+import { Button, Empty, Typography, Space, Form, Table, Tag, Upload as AntUpload, Alert, Modal, Input } from 'antd'
 import { observer } from 'mobx-react';
 import { useServiceStore } from 'store/service/_index-service.store';
 import { useHistory, useParams } from 'react-router-dom';
+import { Controller, FormProvider, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers'
+import * as yup from 'yup'
+
+
+
+// form layout
+const layout = {
+  labelCol: { span: 2 },
+  wrapperCol: { span: 7 },
+};
+const tailLayout = {
+  wrapperCol: {
+    offset: 2,
+    span: 7
+  },
+};
+
+// form consult online
+interface FormConsult {
+  // serviceId: string
+  answer: string
+}
+
+// form consult schema
+const FormConsultSchema: yup.ObjectSchema<FormConsult> = yup.object().shape({
+  // serviceId: yup.string().required().defined(),
+  answer: yup.string().required().defined(),
+}).defined()
+
 
 
 
@@ -78,14 +108,46 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
   // use service store
   const { submissionStore } = useServiceStore()
 
+   // use form
+   const formConsultContext = useForm<FormConsult>({
+    resolver: yupResolver(FormConsultSchema),
+    mode: 'onChange',
+  })
+
+  const [modalAnswer, setModalAnswer] = useState<{
+    submissionRequirementId: string
+    visible: boolean
+    // previewTitle?: any
+  }>({
+    submissionRequirementId: '',
+    visible: false
+    // previewTitle: null
+  })
+
+  const rejectSubmission = (submissionRequirement: any) => {
+    setModalAnswer({
+      submissionRequirementId: submissionRequirement.id,
+      visible: true
+    })
+  }
+
+  // close modal
+  const closeModal = () => setModalAnswer({ ...modalAnswer, visible: false })
+
+  // submit answer
+  const onSubmitAnswer = (answerData: any) => {
+    reject(modalAnswer.submissionRequirementId, answerData.answer)
+    closeModal()
+  }
+
   // approve
   const approve = (submissionRequirementId: string) => {
     submissionStore.approveRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId)
   }
 
   // reject
-  const reject = (submissionRequirementId: string) => {
-    submissionStore.rejectRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId)
+  const reject = (submissionRequirementId: string, reasonReject: string) => {
+    submissionStore.rejectRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId, reasonReject)
   }
 
   const columns = [
@@ -143,7 +205,7 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
         // </Upload>
         <Space>
           <Button type="primary" color="green" onClick={() => approve(record.id)}> Approve </Button>
-          <Button type="primary" danger onClick={() => reject(record.id)}> Reject </Button>
+          <Button type="primary" danger onClick={() => rejectSubmission(record)}> Reject </Button>
         </Space>
       ),
     },
@@ -194,6 +256,45 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
           {/* <Button type="default" danger onClick={cancelSubmission}> CANCEL </Button> */}
         </Space>
       </div>
+
+      <Modal
+        visible={modalAnswer.visible}
+        title="Alasan Reject"
+        footer={null}
+        onCancel={closeModal}
+        destroyOnClose={true}
+      // onOk={}
+      >
+        {/* <Typography.Text strong> {modalAnswer.question} </Typography.Text> */}
+        {/* <br />
+        <br /> */}
+        <FormProvider {...formConsultContext}>
+          <Form onSubmitCapture={formConsultContext.handleSubmit(onSubmitAnswer)} layout="vertical">
+            <Form.Item
+              required
+              label={<Typography.Text strong> Alasan Reject </Typography.Text>}
+              validateStatus={formConsultContext.errors.answer?.message && 'error'}
+              help={formConsultContext.errors.answer?.message}
+            >
+              <Controller
+                as={
+                  <Input.TextArea />
+                }
+                control={formConsultContext.control}
+                name="answer"
+              // defaultValue="Admin"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit"
+              // disabled={!formRegisterContext.formState.isValid}
+              >
+                SEND
+          </Button>
+            </Form.Item>
+          </Form>
+        </FormProvider>
+      </Modal>
     </PageTransitionComponent>
   )
 }
