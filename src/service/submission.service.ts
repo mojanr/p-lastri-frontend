@@ -86,15 +86,15 @@ export class SubmissionService extends ApiService {
   // reject submission
   async rejectRequirement(submissionRequiremetId: string | number, reason: string) {
     console.log(submissionRequiremetId, reason)
-    return this.api.patch(`/submission/requirement/${submissionRequiremetId}/reject`, {reason: reason})
+    return this.api.patch(`/submission/requirement/${submissionRequiremetId}/reject`, { reason: reason })
   }
-  
+
   // get list submission approval
   async getSubmissionVerificationVerifikator(submissionTypeId: string | number) {
     return this.api.get(`/submission/${submissionTypeId}/verification/verifikator`)
   }
 
-   
+
   // get list submission approval
   async getSubmissionVerificationHelpdesk(submissionTypeId: string | number) {
     return this.api.get(`/submission/${submissionTypeId}/verification/helpdesk`)
@@ -105,11 +105,15 @@ export class SubmissionService extends ApiService {
     return this.api.get(`/submission/${submissionTypeId}/requirement/${submissionId}`)
   }
 
-  async submitApprovalHelpdesk(submissionId: string | number) {
-    return this.api.patch(`/submission/submit/approval/helpdesk/${submissionId}`)
+  async submitApprovalHelpdesk(submissionId: string | number, comment: string) {
+    return this.api.patch(`/submission/submit/approval/helpdesk/${submissionId}`, { comment: comment || '' })
   }
 
-  async submitApprovalVerifikator(submissionId: string | number) {
-    return this.api.patch(`/submission/submit/approval/verifikator/${submissionId}`)
+  async submitApprovalVerifikator(submissionId: string | number, comment: string) {
+    return this.api.patch(`/submission/submit/approval/verifikator/${submissionId}`, { comment: comment || '' })
+  }
+
+  async getSubmissionHistory(userId: string | number, submissionTypeId: string | number) {
+    return this.api.get(`/submission/history/${userId}/${submissionTypeId}`)
   }
 }

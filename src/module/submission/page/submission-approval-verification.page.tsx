@@ -28,10 +28,21 @@ interface FormConsult {
   answer: string
 }
 
+interface FormCommment {
+  // serviceId: string
+  comment: string
+}
+
 // form consult schema
 const FormConsultSchema: yup.ObjectSchema<FormConsult> = yup.object().shape({
   // serviceId: yup.string().required().defined(),
   answer: yup.string().required().defined(),
+}).defined()
+
+// form comment schema
+const FormCommentSchema: yup.ObjectSchema<FormCommment> = yup.object().shape({
+  // serviceId: yup.string().required().defined(),
+  comment: yup.string().required().defined(),
 }).defined()
 
 
@@ -108,13 +119,29 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
   // use service store
   const { submissionStore } = useServiceStore()
 
-   // use form
-   const formConsultContext = useForm<FormConsult>({
+  // use form
+  const formConsultContext = useForm<FormConsult>({
     resolver: yupResolver(FormConsultSchema),
     mode: 'onChange',
   })
 
+  // use form comment
+  const formCommentContext = useForm<FormCommment>({
+    resolver: yupResolver(FormCommentSchema),
+    mode: 'onChange',
+  })
+
   const [modalAnswer, setModalAnswer] = useState<{
+    submissionRequirementId: string
+    visible: boolean
+    // previewTitle?: any
+  }>({
+    submissionRequirementId: '',
+    visible: false
+    // previewTitle: null
+  })
+
+  const [modalComment, setModalComment] = useState<{
     submissionRequirementId: string
     visible: boolean
     // previewTitle?: any
@@ -133,6 +160,8 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
 
   // close modal
   const closeModal = () => setModalAnswer({ ...modalAnswer, visible: false })
+  // close modal comment
+  const closeModalComment = () => setModalComment({ ...modalComment, visible: false })
 
   // submit answer
   const onSubmitAnswer = (answerData: any) => {
@@ -141,13 +170,14 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
   }
 
   // approve
-  const approve = (submissionRequirementId: string) => {
-    submissionStore.approveRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId)
+  const approve = async (submissionRequirementId: string) => {
+    await submissionStore.approveRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId)
+    // console.log(submissionStore.getSubmissionApprovalRequirement)
   }
 
   // reject
-  const reject = (submissionRequirementId: string, reasonReject: string) => {
-    submissionStore.rejectRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId, reasonReject)
+  const reject = async (submissionRequirementId: string, reasonReject: string) => {
+    await submissionStore.rejectRequirement(param.submissionTypeId, param.submissionId, submissionRequirementId, reasonReject)
   }
 
   const columns = [
@@ -230,17 +260,64 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
   }
 
   // submit approva
-  const submitApproval = () => {
-    if (user.role.name == 'Helpdesk') {
-      submissionStore.submitApprovalHelpdesk(param.submissionId)
+  const submitApproval = async () => {
+    // if (user.role.name == 'Helpdesk') {
+    //   submissionStore.submitApprovalHelpdesk(param.submissionId)
+    // } else {
+    //   submissionStore.submitApprovalVerifikator(param.submissionId)
+    // }
+    // // console.log(parse)
+    // if (user?.role?.name == 'Helpdesk') {
+    //   submissionStore.fetchSubmissionVerificationHelpdesk(param.submissionTypeId)
+    // } else {
+    //   submissionStore.fetchSubmissionVerificationVerifikator(param.submissionTypeId)
+    // }
+    // history.push(`/main/submission/verification/${param.submissionTypeId}`)
+
+    // check if all approve
+    const isRejectFound = await submissionStore.getSubmissionApprovalRequirement?.filter((value: any, index: number) => {
+      return value.status === 102
+    })
+    // console.log(submissionStore.getSubmissionApprovalRequirement)
+    console.log(isRejectFound)
+    if (isRejectFound.length > 0) {
+      if (user.role.name == 'Helpdesk') {
+        await submissionStore.submitApprovalHelpdesk(param.submissionId, '-')
+      } else {
+        await submissionStore.submitApprovalVerifikator(param.submissionId, '-')
+      }
+      // console.log(parse)
+      if (user?.role?.name == 'Helpdesk') {
+        await submissionStore.fetchSubmissionVerificationHelpdesk(param.submissionTypeId)
+      } else {
+        await submissionStore.fetchSubmissionVerificationVerifikator(param.submissionTypeId)
+      }
+      history.push(`/main/submission/verification/${param.submissionTypeId}`)
     } else {
-      submissionStore.submitApprovalVerifikator(param.submissionId)
+      if (user.role.name == 'Helpdesk') {
+        await submissionStore.submitApprovalHelpdesk(param.submissionId, '-')
+        history.push(`/main/submission/verification/${param.submissionTypeId}`)
+      } else {
+        setModalComment({
+          submissionRequirementId: param.submissionId,
+          visible: true
+        })
+        // submissionStore.submitApprovalVerifikator(param.submissionId, '')
+      }
+    }
+  }
+
+  const onSubmitApprovalWithComment = async (commentData: any) => {
+    if (user.role.name == 'Helpdesk') {
+      await submissionStore.submitApprovalHelpdesk(param.submissionId, commentData?.comment)
+    } else {
+      await submissionStore.submitApprovalVerifikator(param.submissionId, commentData?.comment)
     }
     // console.log(parse)
     if (user?.role?.name == 'Helpdesk') {
-      submissionStore.fetchSubmissionVerificationHelpdesk(param.submissionTypeId)
+      await submissionStore.fetchSubmissionVerificationHelpdesk(param.submissionTypeId)
     } else {
-      submissionStore.fetchSubmissionVerificationVerifikator(param.submissionTypeId)
+      await submissionStore.fetchSubmissionVerificationVerifikator(param.submissionTypeId)
     }
     history.push(`/main/submission/verification/${param.submissionTypeId}`)
   }
@@ -282,6 +359,46 @@ const SubmissionApprovalVerificationPage: FunctionComponent = () => {
                 }
                 control={formConsultContext.control}
                 name="answer"
+              // defaultValue="Admin"
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit"
+              // disabled={!formRegisterContext.formState.isValid}
+              >
+                SEND
+          </Button>
+            </Form.Item>
+          </Form>
+        </FormProvider>
+      </Modal>
+
+      {/* MODAL COMMENT */}
+      <Modal
+        visible={modalComment.visible}
+        title="Comment"
+        footer={null}
+        onCancel={closeModalComment}
+        destroyOnClose={true}
+      // onOk={}
+      >
+        {/* <Typography.Text strong> {modalAnswer.question} </Typography.Text> */}
+        {/* <br />
+        <br /> */}
+        <FormProvider {...formCommentContext}>
+          <Form onSubmitCapture={formCommentContext.handleSubmit(onSubmitApprovalWithComment)} layout="vertical">
+            <Form.Item
+              required
+              label={<Typography.Text strong> Comment </Typography.Text>}
+              validateStatus={formCommentContext.errors.comment?.message && 'error'}
+              help={formCommentContext.errors.comment?.message}
+            >
+              <Controller
+                as={
+                  <Input.TextArea />
+                }
+                control={formCommentContext.control}
+                name="comment"
               // defaultValue="Admin"
               />
             </Form.Item>

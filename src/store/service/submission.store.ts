@@ -11,6 +11,7 @@ export class SubmissionStore {
   @observable activeSubmissionData: any
   @observable submissionApprovalData = []
   @observable submissionApprovalRequirementData: any = []
+  @observable submissionHistoryData: any = []
 
   constructor(store: any) {
     this.store = store
@@ -245,10 +246,10 @@ export class SubmissionStore {
   }
 
   // submit approva
-  async submitApprovalHelpdesk(submissionId: string) {
+  async submitApprovalHelpdesk(submissionId: string, comment: string) {
     try {
       console.log(`[SUBMISSIONS] - Submit Approval`, submissionId)
-      const result = await Api.submissionService.submitApprovalHelpdesk(submissionId)
+      const result = await Api.submissionService.submitApprovalHelpdesk(submissionId, comment)
       // await this.fetchActiveSubmission(submissionTypeId, userId)
       // this.submissionApprovalRequirementData = result.data.submissionRequirements
       // console.log('submission approval requirement', toJS(this.submissionApprovalRequirementData))
@@ -259,10 +260,10 @@ export class SubmissionStore {
   }
 
   // submit approva verifikator
-  async submitApprovalVerifikator(submissionId: string) {
+  async submitApprovalVerifikator(submissionId: string, comment: string) {
     try {
       console.log(`[SUBMISSIONS] - Submit Approval`, submissionId)
-      const result = await Api.submissionService.submitApprovalVerifikator(submissionId)
+      const result = await Api.submissionService.submitApprovalVerifikator(submissionId, comment)
       // await this.fetchActiveSubmission(submissionTypeId, userId)
       // this.submissionApprovalRequirementData = result.data.submissionRequirements
       // console.log('submission approval requirement', toJS(this.submissionApprovalRequirementData))
@@ -270,5 +271,24 @@ export class SubmissionStore {
     } catch (error) {
       return false
     }
+  }
+
+  // fetch submission history
+  @action
+  async fetSubmissionHistory(userId: string | number, submissionTypeId: string | number) {
+    try {
+      console.log(`[SUBMISSIONS] - Fetch Submission History`)
+      const result = await Api.submissionService.getSubmissionHistory(userId, submissionTypeId)
+      this.submissionHistoryData = result.data
+      return result.status == 200 || result.status == 201 ? true : false
+    } catch (error) {
+      return false
+    }
+  }
+
+  // get submission types
+  @computed
+  get getSubmissionHistory() {
+    return toJS(this.submissionHistoryData)
   }
 }

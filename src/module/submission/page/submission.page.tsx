@@ -9,6 +9,7 @@ import { useServiceStore } from 'store/service/_index-service.store'
 import { useLocation, useParams } from 'react-router-dom'
 import CreateSubmissionComponent from 'common/component/submission/create-submission.component'
 import styled from 'styled-components'
+import TableSubmissionHistoryComponent from '../component/table-submission-history.component'
 
 const Upload = styled(AntUpload)`
   display: grid;
@@ -214,6 +215,15 @@ const SubmissionPage: FunctionComponent = () => {
                 </Typography.Text>
               } />
             </Form.Item>
+            {submissionStore?.getActiveSubmission.status === 101 && (
+              <Form.Item>
+                <Alert type="info" message={
+                  <Typography.Text strong >
+                    Pengajuan sudah disubmit <b> Menunggu Verifikasi </b>
+                  </Typography.Text>
+                } />
+              </Form.Item>
+            )}
             <Table columns={columns} dataSource={submissionStore?.getActiveSubmission?.submissionRequirements} pagination={false} showHeader={false} />
             <div style={{ textAlign: 'center', marginTop: 15 }}>
               {submissionStore?.getActiveSubmission.status !== 101 && (
@@ -225,6 +235,10 @@ const SubmissionPage: FunctionComponent = () => {
             </div>
           </CardComponent>
         </PageTransitionComponent>
+      )}
+
+      {!submissionStore?.getActiveSubmission && (
+        <TableSubmissionHistoryComponent />
       )}
     </PageTransitionComponent>
   )
