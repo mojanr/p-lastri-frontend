@@ -15,8 +15,8 @@ WORKDIR /app
 COPY . /app
 
 # #prepare the contiainer for building react 
-RUN npm install --silent
-RUN npm install react-scripts@3.0.1 -g --silent 
+RUN npm install
+RUN npm install react-scripts@3.0.1 -g 
 RUN npm run build 
 
 #prepare nginx
